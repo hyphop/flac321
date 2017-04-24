@@ -6,7 +6,7 @@
 # https://github.com/hyphop/flac123/blob/master/LICENSE
 
 sub info { print <<end
-# flac321  - command line oggFLAC stream radio player like ogg123/mpg123
+# flac321  - command line oggFLAC lossless stream radio player like ogg123/mpg123
 # ver 0.1b - currently used ffmpeg or mpv for audio play
 #	     and wget or curl network connections
 # USAGE 

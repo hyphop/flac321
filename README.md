@@ -1,6 +1,6 @@
 # flac123
 
-flac321  - command line oggFLAC stream radio player like ogg123/mpg123
+flac321  - command line oggFLAC lossless stream radio player like ogg123/mpg123
 
 currently used ffmpeg or mpv backend for play audio and wget or curl network connections
 
