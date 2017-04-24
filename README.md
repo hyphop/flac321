@@ -36,11 +36,9 @@ or
     cd flac123.git
     ./opus123
 
-<!--    
 ## GET & RUN BY ONE LINE 
 
-    wget https://ai-radio.org/get/flac123 -O- | sh -
--->
+    wget http://ai-radio.org/get/flac123 -O- | perl "" http://ai-radio.org/flac
 
 ## NOTE
 

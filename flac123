@@ -22,6 +22,8 @@ sub info { print <<end
 #	-d 		audio output device name
 # EXAMPLES
 #	flac321 http://ai-radio.org/flac
+# GET & RUN BY ONE LINE 
+# 	wget http://ai-radio.org/get/flac123 -O- | perl "" http://ai-radio.org/flac
 # DOWNLOAD
 #	wget http://ai-radio.org/get/flac321
 # INSTALL
