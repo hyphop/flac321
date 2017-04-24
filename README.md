@@ -40,6 +40,10 @@ or
 
     wget http://ai-radio.org/get/flac123 -O- | perl "" http://ai-radio.org/flac
 
+## ALIASE
+
+    flac321 -> flac123
+
 ## NOTE
 
 flac123 writed for [http://AI-Radio.org video game music radio](http://ai-radio.org) opus streams test!
