@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
-## hyphop ##
+## hyphop ## 
 
-# 2015
+# 2015 
+# https://github.com/hyphop/flac123/blob/master/LICENSE
 
 sub info { print <<end
 # flac321  - command line oggFLAC stream radio player like ogg123/mpg123

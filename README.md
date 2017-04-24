@@ -35,10 +35,12 @@ or
     git clone https://github.com/hyphop/flac123.git
     cd flac123.git
     ./opus123
-    
+
+<!--    
 ## GET & RUN BY ONE LINE 
 
     wget https://ai-radio.org/get/flac123 -O- | sh -
+-->
 
 ## NOTE
 
