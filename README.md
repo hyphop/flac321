@@ -26,19 +26,19 @@ play chained streams + display vorbis meta tags by tracks
 
 ## DOWNLOAD & INSTALL
 
-    wget https://raw.githubusercontent.com/hyphop/flac123/master/flac123 || wget http://ai-radio.org/get/flac123
-    chmod 0755 flac123 
-    ./flac123 
+    wget https://raw.githubusercontent.com/hyphop/flac321/master/flac321 || wget http://ai-radio.org/get/flac321
+    chmod 0755 flac321
+    ./flac321
 
 or 
 
-    git clone https://github.com/hyphop/flac123.git
-    cd flac123.git
-    ./opus123
+    git clone https://github.com/hyphop/flac321.git
+    cd flac321.git
+    ./flac321
 
 ## GET & RUN BY ONE LINE 
 
-    wget http://ai-radio.org/get/flac123 -O- | perl "" http://ai-radio.org/flac
+    wget http://ai-radio.org/get/flac321 -O- | perl "" http://ai-radio.org/flac
 
 ## ALIASE
 
@@ -46,7 +46,7 @@ or
 
 ## NOTE
 
-flac123 writed for [http://AI-Radio.org video game music radio](http://ai-radio.org) opus streams test!
+flac321 writed for [http://AI-Radio.org video game music radio](http://ai-radio.org) opus streams test!
 play flac streams and display meta ok! sure u can listen any other radio stream too;)
 
 ## LINKS
