@@ -1,4 +1,4 @@
-# flac123
+# flac321
 
 flac321  - command line oggFLAC lossless stream radio player like ogg123/mpg123
 
@@ -51,7 +51,7 @@ play flac streams and display meta ok! sure u can listen any other radio stream 
 
 ## LINKS
 
-* [https://github.com/hyphop/flac123.git](https://github.com/hyphop/flac123.git)
+* [https://github.com/hyphop/flac321.git](https://github.com/hyphop/flac321.git)
 * [http://ai-radio.org/chronos/2015-07-05-flac321-command-line-stream-radio-player](http://ai-radio.org/chronos/2015-07-05-flac321-command-line-stream-radio-player)
 * [http://ai-radio.org/streams/](http://ai-radio.org/streams/)
 * [http://dir.xiph.org/by_format/Opus](http://dir.xiph.org/by_format/Opus)
