@@ -12,6 +12,8 @@ currently used ffmpeg or mpv backend for play audio and wget or curl network con
 
 play chained streams + display vorbis meta tags by tracks
 
+<img width="90%" src="pics/flac321.animated.gif" />
+
 ## OPTIONS
 
     --no-fancy	disable fancy meta tags output
@@ -58,4 +60,7 @@ play flac streams and display meta ok! sure u can listen any other radio stream 
 
 ## AUTHOR 
 
-    ## hyphop ##
+## hyphop ##
+
+[https://github.com/hyphop](https://github.com/hyphop)
+

@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>
+USAGE 
+</title>
+    </head>
+
+<style>
+
+html, body {
+    padding: 0px;
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    max-width: 1024px;
+    min-width: 320px;
+    height:100%;
+    font-family: arial;
+    font-size: 24px;
+    color: #000000;
+    background: #666666;
+}
+
+table {
+    font-family: arial;
+    font-size: 16px;
+    color: #000000;
+}
+
+pro {
+    font-family: arial;
+    font-size: 16px;
+    color: #000000;
+}
+
+label{
+    font-family: arial;
+    font-size: 18px;
+    border: 0px solid red;
+    display: inline-block;
+    width: 100%;
+}
+
+h1,h2,h3 {
+    font-size: 120%;
+    color: #666666;
+
+}
+
+p {
+    padding-bottom: 10px;
+}
+
+h2 {
+    font-size: 150%;
+}
+
+h1 {
+    font-size: 200%;
+}
+
+.main img {
+    padding: 20px;
+}
+
+a{
+    color: #4186be;
+
+    text-decoration: none;
+}
+
+a:hover {
+    color: #E86402;
+;
+}
+
+h2 b{
+    color: #E86402;
+}
+
+.date{
+	background: #eee;
+	display: block;
+	padding: 10px;
+	width: 100px;
+	float: left;
+	margin-right: 20px;
+	color: #aaa;
+	font-size: 100%;
+	text-align: center;
+}
+
+
+.pro{
+	font-size: 120%;
+}
+
+.main{
+    border: solid 1px #fff;
+    background: #fff;
+    margin: 0px;
+    padding: 0px;
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    height:auto !important; /* real browsers */
+    height:100%; /* IE6: treaded as min-height*/
+    min-height:100%; /* real browsers */
+}
+
+    .cmd {
+	padding-left: 10px;
+        list-style: none;
+	font-family: monospace;
+	font-size: 80%;
+    }
+
+    .cmd li{
+
+    }
+
+    .cmd li:before {
+	content: "# ";
+	color: #aaffff;
+    }
+
+    pre {
+
+    padding: 0px;
+    white-space: pre;
+    margin: 0px;
+	font-size: 85%;
+    }
+
+    code {
+	display: block;
+	padding-left: 10px;
+	font-family: monospace;
+	white-space: pre-line;
+	border-left: solid #bebebe 4px;
+	color: #666666;
+    }
+    .bottom {
+	display: block;
+	border-top: solid #bebebe 1px;
+	color: #666666;
+	padding: 20px;
+    }
+
+</style>
+
+<body>
+<div class="main">
+<h1>flac321</h1>
+
+<p>flac321  - command line oggFLAC chained stream lossless radio player ( like ogg123/mpg123 )</p>
+
+<p>currently used ffmpeg or mpv backend for play audio and wget or curl network connections</p>
+
+<h2><a name='usage'></a>USAGE</h2>
+
+<pre><code>flac321 [url]
+</code></pre>
+
+<h2><a name='features'></a>FEATURES</h2>
+
+<p>play chained streams + display vorbis meta tags by tracks</p>
+
+<p><img width="90%" src="pics/flac321.animated.gif" /></p>
+
+<h2><a name='options'></a>OPTIONS</h2>
+
+<pre><code>--no-fancy  disable fancy meta tags output
+--no-icy    dont display icy headers
+--no-audio  disable audio output, display meta only
+-6 / -4     ipv6 / ipv4 use only
+-d      audio output device name
+</code></pre>
+
+<h2><a name='examples'></a>EXAMPLES</h2>
+
+<pre><code>flac321 [http://ai-radio.org/flac](http://ai-radio.org/flac)
+</code></pre>
+
+<h2><a name='download_install'></a>DOWNLOAD &amp; INSTALL</h2>
+
+<pre><code>wget [https://raw.githubusercontent.com/hyphop/flac321/master/flac321](https://raw.githubusercontent.com/hyphop/flac321/master/flac321) || wget [http://ai-radio.org/get/flac321](http://ai-radio.org/get/flac321)
+chmod 0755 flac321
+./flac321
+</code></pre>
+
+<p>or </p>
+
+<pre><code>git clone [https://github.com/hyphop/flac321.git](https://github.com/hyphop/flac321.git)
+cd flac321.git
+./flac321
+</code></pre>
+
+<h2><a name='get_run_by_one_line'></a>GET &amp; RUN BY ONE LINE</h2>
+
+<pre><code>wget [http://ai-radio.org/get/flac321](http://ai-radio.org/get/flac321) -O- | perl "" [http://ai-radio.org/flac](http://ai-radio.org/flac)
+</code></pre>
+
+<h2><a name='aliase'></a>ALIASE</h2>
+
+<pre><code>flac321 -&gt; flac123
+</code></pre>
+
+<h2><a name='note'></a>NOTE</h2>
+
+<p>flac321 writed for <a href="http://ai-radio.org">http://AI-Radio.org video game music radio</a> opus streams test!
+play flac streams and display meta ok! sure u can listen any other radio stream too;)</p>
+
+<h2><a name='links'></a>LINKS</h2>
+
+<ul>
+<li><a href="https://github.com/hyphop/flac321.git">https://github.com/hyphop/flac321.git</a></li>
+<li><a href="http://ai-radio.org/chronos/2015-07-05-flac321-command-line-stream-radio-player">http://ai-radio.org/chronos/2015-07-05-flac321-command-line-stream-radio-player</a></li>
+<li><a href="http://ai-radio.org/streams/">http://ai-radio.org/streams/</a></li>
+<li><a href="http://dir.xiph.org/by_format/Opus">http://dir.xiph.org/by_format/Opus</a></li>
+</ul>
+
+<h2><a name='author'></a>AUTHOR</h2>
+
+<h2><a name='hyphop'></a>hyphop</h2>
+
+<p><a href="https://github.com/hyphop">https://github.com/hyphop</a></p>
+
+<script>
+ss=document.getElementById("stopspam");
+ss.innerHTML=ss.innerHTML.replace(/\(at\)/, '@').replace(/\(dot\)/, '.');
+</script>
+
+    <div class="bottom">
+    Thu May 11 07:42:37 UTC 2017
+    </div>
+
+<div>
+</body>
+</html>
