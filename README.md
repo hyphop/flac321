@@ -6,7 +6,7 @@ currently used ffmpeg or mpv backend for play audio and wget or curl network con
 
 ## USAGE 
 
-    flac321 [url]
+    flac321 [url|file]
  
 ## FEATURES
 
@@ -16,11 +16,15 @@ play chained streams + display vorbis meta tags by tracks
 
 ## OPTIONS
 
-    --no-fancy	disable fancy meta tags output
-    --no-icy	dont display icy headers
-    --no-audio	disable audio output, display meta only
-    -6 / -4 	ipv6 / ipv4 use only
-    -d 		audio output device name
+*    --no-fancy	disable fancy meta tags output
+*    --no-icy	dont display icy headers
+*    --no-audio	disable audio output, display meta only
+*    -6 / -4 	ipv6 / ipv4 use only
+*    -d 	audio output device name
+*    -c 	write audio output to STDOUT
+*    -m 	write meta to file 
+*    -F 	raw flac out
+*    \-		read from STDIN
 
 ## EXAMPLES
 

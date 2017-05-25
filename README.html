@@ -162,7 +162,7 @@ h2 b{
 
 <h2><a name='usage'></a>USAGE</h2>
 
-<pre><code>flac321 [url]
+<pre><code>flac321 [url|file]
 </code></pre>
 
 <h2><a name='features'></a>FEATURES</h2>
@@ -173,12 +173,17 @@ h2 b{
 
 <h2><a name='options'></a>OPTIONS</h2>
 
-<pre><code>--no-fancy  disable fancy meta tags output
---no-icy    dont display icy headers
---no-audio  disable audio output, display meta only
--6 / -4     ipv6 / ipv4 use only
--d      audio output device name
-</code></pre>
+<ul>
+<li>--no-fancy disable fancy meta tags output</li>
+<li>--no-icy   dont display icy headers</li>
+<li>--no-audio disable audio output, display meta only</li>
+<li>-6 / -4    ipv6 / ipv4 use only</li>
+<li>-d     audio output device name</li>
+<li>-c     write audio output to STDOUT</li>
+<li>-m     write meta to file </li>
+<li>-F     raw flac out</li>
+<li>-     read from STDIN</li>
+</ul>
 
 <h2><a name='examples'></a>EXAMPLES</h2>
 
@@ -235,7 +240,7 @@ ss.innerHTML=ss.innerHTML.replace(/\(at\)/, '@').replace(/\(dot\)/, '.');
 </script>
 
     <div class="bottom">
-    Thu May 11 07:42:37 UTC 2017
+    
     </div>
 
 <div>
