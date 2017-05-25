@@ -30,6 +30,8 @@ sub info { print <<end
 #	flac321 http://ai-radio.org/flac
 # 	flac123 -F -c - < 44.flac 2>44.err | flac --force-raw-format --endian=little  --sign=signed -F -d - | aplay -fcd
 #	flac123 -F -c http://ai-radio.org/44.flac | flac --totally-silent --force-raw-format --endian=little  --sign=signed -F -d - | aplay -q -fcd
+#	flac123 --no-fancy -m 123.meta -F -c > 1.flac
+#	flac123 -d sysdefault:CARD=DragonFly
 #
 # DOWNLOAD
 #	wget http://ai-radio.org/get/flac321
@@ -67,7 +69,7 @@ our $is64 = $@ ? 0 : 1;
 
 ### config vars
 our $in;
-our $http_headers_display = 1;
+our $http_headers_display = 0;
 our $fancy_no             = 0;
 our $audio_no;
 our $ipv6;
@@ -91,6 +93,7 @@ while ( $_ = shift @ARGV ) {
 #    warn "[i] arg $_\n";
     $fancy_no             = 1    if /^-+no-fancy/;
     $http_headers_display = 0    if /^-+no-icy/;
+    $http_headers_display = 1    if /^-icy/;
     $in                   = "$_" if /^http\:/;
     $ipv6                 = 1    if /^-6/;
     $ipv6                 = 0    if /^-4/;
@@ -119,6 +122,8 @@ $in //= $user::cfg{stream_default} and
 $read_timeout = 1 * $user::cfg{read_timeout} if $user::cfg{read_timeout};
 $player_order = $user::cfg{player_order}     if $user::cfg{player_order};
 $http_order   = $user::cfg{http_order}       if $user::cfg{http_order};
+$http_headers_display = $user::cfg{http_headers_display}
+  if $user::cfg{http_headers_display};
 
 $audio_dev = $user::cfg{audio_dev}
   if !defined $audio_dev && $user::cfg{audio_dev};
@@ -155,7 +160,10 @@ our @ffmpeg = (qw{ ffmpeg -probesize }, $probe_size,
     qw{ -nostats -v quiet -i - -f alsa }, $audio_dev );
 our @ffplay = (qw{ ffplay -probesize }, $probe_size,
     qw{ -nostats -v quiet -nodisp - });
-our @flac_44_16 = qw{ flac --totally-silent --force-raw-format --endian=little --sign=signed -F -d - | aplay -q -fcd };
+our @flac_44_16 = (
+qw{ flac --totally-silent --force-raw-format --endian=little --sign=signed -F -d - | aplay -q -fcd -D
+    $audio_dev
+);
 #our @flac_44_16 = qw{ play -t flac -};
 
 our %player_params = (
@@ -383,9 +391,9 @@ while ($noexit) {
 
     stream_read($ogg_payload_size) or last;
 
-#             $_ = substr $_, 0, $ogg_seg_tbl[0];
-#             s/(\W)/sprintf('\x%02X' => ord($1))/eg;
-#             warn "[PAYLOAD DUMP]$_\n";
+#	warn "[PAYLOAD DUMP]" . (
+#	substr ($_, 0, $ogg_seg_tbl[0]) =~ s/(\W)/sprintf('\x%02X' => ord($1))/reg
+#	) . "\n";
 
     my $fb = substr $_, 0, 1;
 
@@ -394,7 +402,7 @@ while ($noexit) {
     if ( $ogg_page < 3 && $fb eq "\xFF" ) {
 
 	if ( $flac_out ) {
-#	    warn "[BEGIN]";
+	    #warn "[i] FLAC CONF\n";
 	    $w  = syswrite $OUT, $_;
         }
 
@@ -441,9 +449,7 @@ while ($noexit) {
         printf STDERR "FLAC audio %d:%d:%d/%d*%d %-20s\n" => $hdr[3],
           $hdr[5], $hdr[6], $hdr[2], $hdr[7], "$get->[0] => $player->[0], reconnect: $reconnect_auto ($reconnect_count)";
 
-		    
-        out_open() if $flac_out && ! $out_open;
-
+	out_open() if ! $out_open;
 
     }
     elsif ( $fb eq "\x84" ) {
@@ -451,9 +457,29 @@ while ($noexit) {
     }
     elsif ( $fb eq "\x7F" ) {
         #$track_bytes = 0
-	warn "[i] chain $ogg_page\n";
+	#              0   1334 5   6   7   8 +1 = 9
+	#[PAYLOAD DUMP]\x7FFLAC\x01\x00\x00\x01
+	#fLaC\x00\x00\x00\x22\x10\x00\x10\x00\x00\x00\x00\x00\x00\x00\x0A\xC4B\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+
+	if ( $flac_out && $flac_out++ < 2 ) {
+	    
+	    out_open() if ! $out_open;
+
+	    #printf %x 8192+96
+	    #dd if=1.flac bs=$((8192+96)) count=1 >22.flac
+
+	    #warn "[i] FLAC HEADER\n"; 
+	    #f ( $flac_out
+#	    $w  = syswrite $OUT, substr ($_, 9, $ogg_seg_tbl[0]);
+#	    $w  = syswrite $OUT, substr ($_, 9);
+#	    $w  = syswrite $OUT, 
+#	    pack "H*" => ""
+
+        }
+	
     } else {
 	if ( $flac_out ) {
+	    #warn "[i] FLAC DATA\n"; 
 	    $w  = syswrite $OUT, $_;
         }
     }
