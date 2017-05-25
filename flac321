@@ -1,16 +1,18 @@
 #!/usr/bin/perl
-
-## hyphop ## 
-
-# 2015 
-# https://github.com/hyphop/flac321/blob/master/LICENSE
+#
+# Copyright (c) 2015 Artem Nikpal
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at
+# your option) any later version ...
 
 sub info { print <<end
-# flac321  - command line oggFLAC lossless stream radio player like ogg123/mpg123
+# flac321  - command line oggFLAC stream radio player like ogg123/mpg123
 # ver 0.1b - currently used ffmpeg or mpv for audio play
 #	     and wget or curl network connections
 # USAGE 
-#	flac321 [url]
+#	flac321 [url|file]
 # 
 # FEATURES
 # 	chained streams + display vorbis meta tags by tracks
@@ -20,16 +22,19 @@ sub info { print <<end
 #	--no-audio	disable audio output, display meta only
 #	-6 / -4 	ipv6 / ipv4 use only
 #	-d 		audio output device name
+#	-c 		write to STDOUT 
+#	-m 		write meta to file / by default writed to STDERR
+#	-F 		raw flac out
+#	- 		read from STDIN
 # EXAMPLES
 #	flac321 http://ai-radio.org/flac
-# GET & RUN BY ONE LINE 
-# 	wget http://ai-radio.org/get/flac321 -O- | perl "" http://ai-radio.org/flac
+# 	flac123 -F -c - < 44.flac 2>44.err | flac --force-raw-format --endian=little  --sign=signed -F -d - | aplay -fcd
+#	flac123 -F -c http://ai-radio.org/44.flac | flac --totally-silent --force-raw-format --endian=little  --sign=signed -F -d - | aplay -q -fcd
+#
 # DOWNLOAD
 #	wget http://ai-radio.org/get/flac321
 # INSTALL
 #	chmod 0755 flac321
-# LINKS
-#	https://github.com/hyphop/flac321
 #
 # ~/.flac321rc - user config file
 # 
@@ -70,22 +75,40 @@ our $read_timeout = 2;
 our $audio_dev;
 our $audio_dev_def = 'default';
 
-our $player_order = "mpv ffplay ffmpeg";
+our $player_order = 
+    "flac mpv ffplay ffmpeg"
+    ;
+
 our $http_order = "curl wget";
 
 ###
 
+# ugly )))
+our $is_file;
+our $flac_out;
+our $meta_file;
 while ( $_ = shift @ARGV ) {
+#    warn "[i] arg $_\n";
     $fancy_no             = 1    if /^-+no-fancy/;
     $http_headers_display = 0    if /^-+no-icy/;
-    $in                   = "$_" if /^http/;
+    $in                   = "$_" if /^http\:/;
     $ipv6                 = 1    if /^-6/;
     $ipv6                 = 0    if /^-4/;
     $audio_no             = 1    if /^-+no-audio/;
+    $audio_no             = 'c'  if /^-c/;
     info() and exit 		 if /^\-+h|help/;
     $audio_dev = shift @ARGV	 if /^-d/;
+    $meta_file = shift @ARGV	 if /^-m/;
+    $flac_out	= 1 		 if /^-F/;
+    $is_file = 1 && $in = $_	 if -f $_;
+    $is_file = 1 && $in = "&STDIN" if $_ eq '-';
 }
 
+our $META;
+$meta_file //= '&STDERR';
+open $META, ">$meta_file";
+
+warn "[i] $in\n";
 # read user configs
 user::config($_) for qw{ <&DATA /etc/flac321.conf ~/.flac321rc };
 # user::showcfg();
@@ -132,11 +155,14 @@ our @ffmpeg = (qw{ ffmpeg -probesize }, $probe_size,
     qw{ -nostats -v quiet -i - -f alsa }, $audio_dev );
 our @ffplay = (qw{ ffplay -probesize }, $probe_size,
     qw{ -nostats -v quiet -nodisp - });
+our @flac_44_16 = qw{ flac --totally-silent --force-raw-format --endian=little --sign=signed -F -d - | aplay -q -fcd };
+#our @flac_44_16 = qw{ play -t flac -};
 
 our %player_params = (
     mpv    => \@mpv,
     ffmpeg => \@ffmpeg,
     ffplay => \@ffplay,
+    flac   => \@flac_44_16,
 );
 
 our %http_params = (
@@ -155,13 +181,16 @@ push @wget => '--save-headers' if $http_headers_display;
 push @wget => $ipv6 ? '-6' : '-4' if defined $ipv6;
 push @wget => qw{ -U } => "flac321/wget/";
 
-our $get = check( map { $http_params{$_} } split /\s+/, $http_order )
+our $get = check( map { $http_params{$_} } split /\W+/, $http_order )
   or die "[e] not found any http client";
 
 our $player =
   $audio_no
   ? undef
-  : check( map { $player_params{$_} } split /\s+/, $player_order );
+  : check( map { $player_params{$_} } split /\W+/, $player_order );
+
+
+$flac_out = 1 if $player->[0] =~ /(flac)/;
 
 our @progress      = qw{ / - \ | };
 our $progress_i    = 0;
@@ -207,17 +236,37 @@ do {
     }
 } while ( $reconnect_auto );
 
-sub play {
+our $out_open = 0;
+
+sub out_open {
+
+if (@$player) {
+    if ( index "@$player", '|' > -1 ) {
+        $OUT_pid = open $OUT, "|@$player";
+    }
+    else {
+        $OUT_pid = open $OUT, "|-", @$player;
+    }
+}
+else {
+    undef $OUT_pid;
+    open $OUT, ">/dev/null";
+    warn "[i] audio output disabled\n";
+}
+
+if ( $audio_no eq 'c' ) {
+    warn "[i] audio output to STDOUT\n";
+    open $OUT, ">&STDOUT";
+}
+
+    $out_open = 1
+}
+
 
 our $OUT;
 our $OUT_pid;
-if (@$player) {
-    $OUT_pid = open $OUT, "|-", @$player;
-}
-else {
-    $OUT_pid = open $OUT, ">/dev/null";
-    warn "[i] audio output disabled\n";
-}
+
+sub play {
 
 warn "[i] icy-no:$http_headers_display fancy-no:$fancy_no ".
      "ipv6:$ipv6 64bit:$is64 usage: $get->[0]/$player->[0]\n";
@@ -225,7 +274,18 @@ warn "[i] connecting to $in\n";
 
 our $IN_buffer = '';
 our $IN_readed = 0;
-our $IN_pid    = open $IN, "-|", @$get, $in;
+
+our $IN_pid;
+    if ( $is_file ){
+	warn "[i] open file $in\n";
+	$http_headers_display = 0;
+	$reconnect_auto = 0;
+	$reconnect_delay = 0;
+	open $IN, "<$in";
+    } else {
+	$IN_pid    = open $IN, "-|", @$get, $in;
+    }
+
 our $in_real   = $in;
 
 binmode $IN;
@@ -280,6 +340,8 @@ while ($noexit) {
 #   warn "[i] readed $readed $readed2    \n";
 #   last if $readed != &OGG_HEADER_SIZE;
 
+    out_open() if ! $flac_out && ! $out_open;
+
     my @ogg_hdr;
 
     if ($is64) {
@@ -321,13 +383,20 @@ while ($noexit) {
 
     stream_read($ogg_payload_size) or last;
 
-    #         $_ = substr $_, 0, $ogg_seg_tbl[0];
-    #         s/(\W)/sprintf('\x%02X' => ord($1))/eg;
-    #         warn "[PAYLOAD DUMP]$_\n";
+#             $_ = substr $_, 0, $ogg_seg_tbl[0];
+#             s/(\W)/sprintf('\x%02X' => ord($1))/eg;
+#             warn "[PAYLOAD DUMP]$_\n";
 
     my $fb = substr $_, 0, 1;
 
+    my $w;
+
     if ( $ogg_page < 3 && $fb eq "\xFF" ) {
+
+	if ( $flac_out ) {
+#	    warn "[BEGIN]";
+	    $w  = syswrite $OUT, $_;
+        }
 
         # get audio params from 3th ogg packet
         # warn "B".( ( unpack "B16") );
@@ -372,16 +441,28 @@ while ($noexit) {
         printf STDERR "FLAC audio %d:%d:%d/%d*%d %-20s\n" => $hdr[3],
           $hdr[5], $hdr[6], $hdr[2], $hdr[7], "$get->[0] => $player->[0], reconnect: $reconnect_auto ($reconnect_count)";
 
+		    
+        out_open() if $flac_out && ! $out_open;
+
+
     }
     elsif ( $fb eq "\x84" ) {
         vorbis_comments_decode( \$IN_buffer, &OGG_HEADER_SIZE + @ogg_seg_tbl );
     }
     elsif ( $fb eq "\x7F" ) {
         #$track_bytes = 0
+	warn "[i] chain $ogg_page\n";
+    } else {
+	if ( $flac_out ) {
+	    $w  = syswrite $OUT, $_;
+        }
     }
 
     my $op = substr $IN_buffer, 0, length $IN_buffer, '';
-    my $w = syswrite $OUT, $op;
+
+    unless ( $flac_out ) {
+	$w  = syswrite $OUT, $op;
+    }
 
     # current position in samples
     my $gpc = $ogg_hdr[&OGG_absolute_granule_position];
@@ -452,13 +533,16 @@ sub vorbis_comments_decode {
         $o += $l;
     }
 
-    syswrite STDERR, join "\n" => @tags => "\n";
+    syswrite $META, join "\n" => @tags => "\n";
+#    syswrite STDERR, join "\n" => @tags => "\n";
 }
 
 sub check {
 
 #    while ( my $c = shift ) {
 #        my $r = `command -v $c->[0] 2>/dev/null`;
+
+#    warn "[i] check @{$_[0]}";
 
     while ( my $c = shift ) {
 #	my $cmd = $_[1]->{$c}->[0];
@@ -593,7 +677,7 @@ __DATA__
 # you can comment any line by #
 #
 # stream_default	http://ai-radio.org/flac
-  player_order		ffmpeg mpv ffplay ffmpeg
+  player_order		flac ffmpeg mpv ffplay
 # http_order		curl murl wget
 # read_timeout		2
 # reconnect_auto	0
