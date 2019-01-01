@@ -73,7 +73,7 @@ our $http_headers_display = 0;
 our $fancy_no             = 0;
 our $audio_no;
 our $ipv6;
-our $read_timeout = 2;
+our $read_timeout = 10;
 our $audio_dev;
 our $audio_dev_def = 'default';
 
@@ -161,9 +161,9 @@ our @ffmpeg = (qw{ ffmpeg -probesize }, $probe_size,
 our @ffplay = (qw{ ffplay -probesize }, $probe_size,
     qw{ -nostats -v quiet -nodisp - });
 our @flac_44_16 = (
-qw{ flac --totally-silent --force-raw-format --endian=little --sign=signed -F -d - | aplay -q -fcd -D
+qw{ flac --totally-silent --force-raw-format --endian=little --sign=signed -F -d - | aplay -q -fcd -D } ,
     $audio_dev
-);
+ );
 #our @flac_44_16 = qw{ play -t flac -};
 
 our %player_params = (
