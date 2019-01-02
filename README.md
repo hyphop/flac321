@@ -2,9 +2,20 @@
 
 flac321  - command line oggFLAC chained stream lossless radio player ( like ogg123/mpg123 )
 
-currently used ffmpeg or mpv backend for play audio and wget or curl network connections
+best lossless radio player for geeks )
 
-## USAGE 
+# Features
+
++ display meta for every track
++ play oggFLAC chained stream
++ pure perl code
++ console interface
++ tiny and advanced
+
+currently used simple tools `ffmpeg` | `mpv` | `flac` | `aplay` | `paplay` | `wget` | `curl`
+for automate play audio stream
+
+## USAGE
 
     flac321 [url|file]
  
@@ -26,7 +37,7 @@ play chained streams + display vorbis meta tags by tracks
 *    -F 	raw flac out
 *    \-		read from STDIN
 
-## EXAMPLES
+## USAGE EXAMPLES
 
     flac321 http://ai-radio.org/flac
 
@@ -52,7 +63,7 @@ or
 
 ## NOTE
 
-flac321 writed for [http://AI-Radio.org video game music radio](http://ai-radio.org) opus streams test!
+flac321 writed for [http://AI-Radio.org video game music radio](http://ai-radio.org) oggFLAC streams test!
 play flac streams and display meta ok! sure u can listen any other radio stream too;)
 
 ## LINKS
