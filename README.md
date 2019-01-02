@@ -4,7 +4,12 @@ flac321  - command line oggFLAC chained stream lossless radio player ( like ogg1
 
 best lossless radio player for geeks )
 
-# Features
+
+## USAGE
+
+    flac321 [url|file]
+ 
+## FEATURES
 
 + display meta for every track
 + play oggFLAC chained stream
@@ -14,14 +19,6 @@ best lossless radio player for geeks )
 
 currently used simple tools `ffmpeg` | `mpv` | `flac` | `aplay` | `paplay` | `wget` | `curl`
 for automate play audio stream
-
-## USAGE
-
-    flac321 [url|file]
- 
-## FEATURES
-
-play chained streams + display vorbis meta tags by tracks
 
 <img width="90%" src="pics/flac321.animated.gif" />
 
