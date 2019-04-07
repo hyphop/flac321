@@ -146,7 +146,12 @@ sub terminated {
     exit(0);
 }
 
-$audio_no //= !-d "/proc/asound";    # hmmmm ???? may be wrong method
+#if ( !-d "/proc/asound" ) {#
+if ( ! -d "/sys/class/sound/" ) { 
+    warn "[i] no alsa detected\n";
+    $audio_no = 1;
+#    $audio_no //= ;    # hmmmm ???? may be wrong method
+}
 
 our $probe_size = 65536*4;
 
@@ -192,10 +197,8 @@ push @wget => qw{ -U } => "flac321/wget/";
 our $get = check( map { $http_params{$_} } split /\W+/, $http_order )
   or die "[e] not found any http client";
 
-our $player =
-  $audio_no
-  ? undef
-  : check( map { $player_params{$_} } split /\W+/, $player_order );
+our $player = $audio_no ? undef :
+   check( map { $player_params{$_} } split /\W+/, $player_order );
 
 
 $flac_out = 1 if $player->[0] =~ /(flac)/;
@@ -575,7 +578,8 @@ sub check {
 #	my $cmd = $c;
 	my $cmd = $c->[0];
 
-        my $r = `command -v $cmd 2>/dev/null`;
+#        my $r = `command -v $cmd 2>/dev/null`;
+        my $r = `which $cmd 2>/dev/null`;
 
         chomp $r;
         warn "[i] check $cmd => $r\n";
